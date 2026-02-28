@@ -760,6 +760,13 @@ class WellbeingApiClient:
             _LOGGER.error(f"Failed to send command '{command}' for appliance with id {pnc_id}")
             return
 
+        if command == "selectRoomsClean" and appliance.type  == Model.VacuumHygienic700.value:
+            data = {'mapCommand': 'selectRoomsClean'}
+            data.update(params)
+            result = await appliance.send_command(data)
+            _LOGGER.debug(f"Sent command '{command}' with data: {params}, result: {result}")
+            return
+
         if command == "clean_zones" and appliance.type == Model.PUREi9.value:
             # Validate and process the parameters for the PUREi9 interactive map command.
             try:
