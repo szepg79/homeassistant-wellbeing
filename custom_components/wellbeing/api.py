@@ -19,6 +19,7 @@ from homeassistant.const import (
 from homeassistant.helpers.typing import UNDEFINED
 from pyelectroluxgroup.api import ElectroluxHubAPI
 from pyelectroluxgroup.appliance import Appliance as ApiAppliance
+from pyelectroluxgroup.map import MemoryMap
 import voluptuous as vol
 
 FILTER_TYPE = {
@@ -762,6 +763,25 @@ class WellbeingApiClient:
 
         if command == "selectRoomsClean" and appliance.type  == Model.VacuumHygienic700.value:
             data = {'mapCommand': 'selectRoomsClean'}
+            api_maps = await appliance.async_get_memory_maps()
+            
+            ## Repalce mapname with mapId            
+            api_map = next((x for x in api_maps if x.data.get("name") == params['mapName']), None)
+            if api_map is None:
+                _LOGGER.error(f'{params["mapName"]} does not exist.')
+
+            params['mapId'] = api_map.id
+            del params['mapName']
+
+            ## Repalce roomName with roomId
+            for room in params['roomInfo']:
+                room_id = next((r['id'] for r in api_map.data.get("rooms", []) if r['name'] == room['roomName']), None)
+                if room_id is None:
+                    _LOGGER.error(f'{room["roomName"]} does not exist.')
+                room['roomId'] = room_id
+                del room['roomName']
+
+            #update command
             data.update(params)
             result = await appliance.send_command(data)
             _LOGGER.debug(f"Sent command '{command}' with data: {params}, result: {result}")

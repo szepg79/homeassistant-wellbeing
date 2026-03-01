@@ -39,9 +39,9 @@ target:
 ```
 ### Hygenic700
 
-Room cleaning available in Hygenic700 (Gordias) robot vacuum cleaner. Command expect 'map_id' (Specifies the ID of the map where the cleaning operation should take place.), 'type' (in case of room cleaning this is 1), room_id (the ID of the room to be cleaned from Electrolux app), 'sweepMode' (0 (sweep only), 1 (mop & sweep), 'vacuumMode' (quiet, energySaving, standard, powerful), 'waterPumpRate', (off, low, medium, high), 'numberOfCleaningRepetitions'. 
+Room cleaning available in Hygenic700 (Gordias) robot vacuum cleaner. Command expect 'mapName' (from Electrolux app), 'type' (in case of room cleaning this is 1), roomName (from Electrolux app), 'sweepMode' (0 (sweep only), 1 (mop & sweep)), 'vacuumMode' (quiet, energySaving, standard, powerful), 'waterPumpRate', (off, low, medium, high), 'numberOfCleaningRepetitions'. 
 
-#### Example 2
+#### Example
 
 ```
 action: vacuum.send_command
@@ -49,10 +49,10 @@ target:
   entity_id: vacuum.wellbeing_vacuum_state
 data:
   params:
-    mapId: <your map id>
+    mapName: Map1
     type: 1
     roomInfo:
-      - roomId: 14
+      - roomName: Kitchen
         sweepMode: 0
         vacuumMode: standard
         waterPumpRate: "off"
